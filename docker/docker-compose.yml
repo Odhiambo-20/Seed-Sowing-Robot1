@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  ai_module:
+    build:
+      context: .
+      dockerfile: ai.Dockerfile
+    volumes:
+      - ../software:/app/software
+      - ../data:/app/data
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+    restart: unless-stopped
+
+  ros2_navigation:
+    build:
+      context: .
+      dockerfile: ros.Dockerfile
+    volumes:
+      - ../ros2_workspace:/ros2_ws
+    network_mode: host
+    restart: unless-stopped
+
+  sensor_suite:
+    build:
+      context: .
+      dockerfile: sensor_suite.Dockerfile
+    volumes:
+      - ../software:/app/software
+      - /dev:/dev
+    privileged: true
+    restart: unless-stopped
